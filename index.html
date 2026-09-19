@@ -128,6 +128,18 @@
               </div>
             </div>
 
+            <div class="row">
+              <label for="consignee">Consignee (recipient person)</label>
+              <input id="consignee" type="text" placeholder="e.g. z. Hd. Dr. Anna Mustermann" />
+              <span class="hint">Shown under the institute name as the person you address.</span>
+            </div>
+
+            <div class="row">
+              <label for="location">Institute location</label>
+              <input id="location" type="text" placeholder="e.g. Musterstraße 1, 47051 Duisburg" />
+              <span class="hint">The institute's address, shown below the consignee.</span>
+            </div>
+
             <div class="row grow">
               <label for="text">Letter text (body only)</label>
               <textarea
@@ -135,9 +147,9 @@
                 placeholder="Write the text of your cover letter here ..."
               ></textarea>
               <span class="hint">
-                A blank line creates a new paragraph. The salutation, closing,
-                address block and date come automatically from the template (see
-                template.js).
+                A blank line creates a new paragraph. Write the salutation yourself —
+                the sender address, date, subject and closing come automatically from
+                the template (see template.js).
               </span>
             </div>
 
@@ -162,6 +174,47 @@
     </div>
 
     <div id="backdrop" class="backdrop"></div>
+
+    <div id="new-modal" class="modal" hidden>
+      <div class="modal-box">
+        <div class="modal-header">
+          <h2>New letter</h2>
+          <button
+            id="n-close"
+            class="btn icon-btn"
+            type="button"
+            title="Close"
+            aria-label="Close"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              width="16"
+              height="16"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+              stroke-linecap="round"
+              aria-hidden="true"
+            >
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+        <div class="modal-grid">
+          <label for="n-company">Company / Clinic</label>
+          <input id="n-company" type="text" placeholder="e.g. Zahnarztpraxis Dr. Mustermann" />
+          <label for="n-consignee">Consignee (recipient person)</label>
+          <input id="n-consignee" type="text" placeholder="e.g. z. Hd. Dr. Anna Mustermann" />
+          <label for="n-location">Institute location</label>
+          <input id="n-location" type="text" placeholder="e.g. Musterstraße 1, 47051 Duisburg" />
+        </div>
+        <div class="modal-actions">
+          <button id="n-cancel" class="btn">Cancel</button>
+          <button id="n-create" class="btn primary">Create</button>
+        </div>
+      </div>
+    </div>
 
     <div id="profile-modal" class="modal" hidden>
       <div class="modal-box">
@@ -205,6 +258,23 @@
           <input id="p-postal" type="text" placeholder="e.g. 47051" />
           <label for="p-city">City</label>
           <input id="p-city" type="text" placeholder="e.g. Duisburg" />
+        </div>
+        <div class="profile-section">
+          <h3>Letter settings</h3>
+          <div class="modal-grid">
+            <label for="p-title">Letter title (subject)</label>
+            <input id="p-title" type="text" placeholder="e.g. Bewerbung" />
+            <label for="p-photo-btn">Signature photo</label>
+            <div class="photo-field">
+              <img id="p-photo-preview" alt="Signature photo preview" hidden />
+              <div class="photo-actions">
+                <button id="p-photo-btn" class="btn" type="button">Choose photo…</button>
+                <button id="p-photo-remove" class="btn" type="button" hidden>Remove</button>
+              </div>
+              <span class="hint">Shown above your name at the end of every letter.</span>
+              <input id="p-photo" type="file" accept="image/*" hidden />
+            </div>
+          </div>
         </div>
         <div class="modal-actions">
           <button id="p-cancel" class="btn">Cancel</button>

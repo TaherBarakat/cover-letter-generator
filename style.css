@@ -391,6 +391,39 @@ textarea {
   margin-bottom: -8px;
 }
 
+.profile-section {
+  margin-top: 18px;
+  border-top: 1px solid var(--border);
+  padding-top: 16px;
+}
+
+.profile-section h3 {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+
+.photo-field {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.photo-field img {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--border);
+}
+
+.photo-actions {
+  display: flex;
+  gap: 8px;
+}
+
 .modal-actions {
   display: flex;
   justify-content: flex-end;

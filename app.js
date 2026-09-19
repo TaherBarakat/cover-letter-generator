@@ -14,6 +14,8 @@ const SEED_DB = [
     id: "1",
     name: "Zahnarztpraxis Muster",
     website: "https://www.example-praxis.de",
+    consignee: "z. Hd. Dr. Anna Mustermann",
+    location: "Musterstraße 1, 47051 Duisburg",
     text: "hiermit bewerbe ich mich bei Ihnen als Zahnärztin.\n\nNach meinem Studium der Zahnmedizin an der Tishreen Universität und mehrjähriger Berufserfahrung als Zahnärztin bringe ich umfassende klinische Erfahrung mit. Ich arbeite sorgfältig, patientenorientiert und sehr gerne im Team.\n\nÜber die Einladung zu einem persönlichen Vorstellungsgespräch freue ich mich sehr.",
     createdAt: "2026-09-18T08:00:00.000Z",
     updatedAt: "2026-09-18T08:00:00.000Z",
@@ -117,6 +119,8 @@ function normalize(arr) {
         id,
         name: String(x.name),
         website: String(x.website || ""),
+        consignee: String(x.consignee || ""),
+        location: String(x.location || ""),
         text: String(x.text || ""),
         createdAt: x.createdAt || new Date().toISOString(),
         updatedAt: x.updatedAt || new Date().toISOString(),
@@ -168,6 +172,8 @@ function loadIntoUI(l) {
   state.dirty = false;
   $("company").value = l.name;
   $("website").value = l.website || "";
+  $("consignee").value = l.consignee || "";
+  $("location").value = l.location || "";
   $("text").value = l.text || "";
   $("preview-wrap").hidden = true;
   $("preview-frame").srcdoc = "";
@@ -214,6 +220,8 @@ function save() {
   }
   l.name = name;
   l.website = $("website").value.trim();
+  l.consignee = $("consignee").value.trim();
+  l.location = $("location").value.trim();
   l.text = $("text").value;
   l.updatedAt = new Date().toISOString();
   state.dirty = false;
@@ -227,8 +235,22 @@ function saveIfDirty() {
 }
 
 function createNew() {
-  const name = (prompt("Company / clinic name:") || "").trim();
-  if (!name) return;
+  $("n-company").value = "";
+  $("n-consignee").value = "";
+  $("n-location").value = "";
+  $("new-modal").hidden = false;
+}
+
+function closeNewModal() {
+  $("new-modal").hidden = true;
+}
+
+function confirmNew() {
+  const name = $("n-company").value.trim();
+  if (!name) {
+    setStatus("The company name cannot be empty", true);
+    return;
+  }
   if (state.db.some((l) => l.name.toLowerCase() === name.toLowerCase())) {
     setStatus("A letter with this name already exists", true);
     return;
@@ -238,12 +260,15 @@ function createNew() {
     id: uid(),
     name,
     website: "",
+    consignee: $("n-consignee").value.trim(),
+    location: $("n-location").value.trim(),
     text: "",
     createdAt: now,
     updatedAt: now,
   };
   state.db.push(l);
   persistDB();
+  closeNewModal();
   loadIntoUI(l);
   setStatus("New letter created");
 }
@@ -355,11 +380,56 @@ function openProfile() {
   $("p-street").value = p.street || "";
   $("p-postal").value = p.postal || "";
   $("p-city").value = p.city || "";
+  $("p-title").value = p.title || "";
+  pendingPhoto = p.photo || "";
+  updatePhotoPreview();
   $("profile-modal").hidden = false;
 }
 
 function closeProfile() {
   $("profile-modal").hidden = true;
+}
+
+let pendingPhoto = "";
+
+function updatePhotoPreview() {
+  const prev = $("p-photo-preview");
+  if (pendingPhoto) {
+    prev.src = pendingPhoto;
+    prev.hidden = false;
+    $("p-photo-remove").hidden = false;
+  } else {
+    prev.removeAttribute("src");
+    prev.hidden = true;
+    $("p-photo-remove").hidden = true;
+  }
+}
+
+function readPhoto() {
+  const file = $("p-photo").files[0];
+  if (!file) return;
+  if (!file.type.startsWith("image/")) {
+    setStatus("Choose an image file", true);
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = () => {
+    const img = new Image();
+    img.onload = () => {
+      const max = 400;
+      const scale = Math.min(1, max / Math.max(img.width, img.height));
+      const w = Math.max(1, Math.round(img.width * scale));
+      const h = Math.max(1, Math.round(img.height * scale));
+      const canvas = document.createElement("canvas");
+      canvas.width = w;
+      canvas.height = h;
+      canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+      pendingPhoto = canvas.toDataURL("image/jpeg", 0.85);
+      updatePhotoPreview();
+    };
+    img.src = reader.result;
+  };
+  reader.readAsDataURL(file);
 }
 
 function saveProfile() {
@@ -375,6 +445,8 @@ function saveProfile() {
     street: $("p-street").value.trim(),
     postal: $("p-postal").value.trim(),
     city: $("p-city").value.trim(),
+    title: $("p-title").value.trim() || "Bewerbung",
+    photo: pendingPhoto,
   });
   try {
     localStorage.setItem(PROFILE_KEY, JSON.stringify(getProfile()));
@@ -400,7 +472,12 @@ function loadProfile() {
 }
 
 function profileFromModal(e) {
-  if (e.key === "Escape" && !$("profile-modal").hidden) closeProfile();
+  if (e.key !== "Escape") return;
+  if (!$("new-modal").hidden) {
+    closeNewModal();
+  } else if (!$("profile-modal").hidden) {
+    closeProfile();
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -435,10 +512,28 @@ document.addEventListener("DOMContentLoaded", function init() {
 
   $("new-btn").addEventListener("click", createNew);
   $("empty-new").addEventListener("click", createNew);
+  $("n-close").addEventListener("click", closeNewModal);
+  $("n-cancel").addEventListener("click", closeNewModal);
+  $("n-create").addEventListener("click", confirmNew);
+  $("new-modal").addEventListener("click", (e) => {
+    if (e.target === $("new-modal")) closeNewModal();
+  });
+  $("n-company").addEventListener("keydown", (e) => {
+    if (e.key === "Enter") confirmNew();
+  });
   $("profile-btn").addEventListener("click", openProfile);
   $("p-close").addEventListener("click", closeProfile);
   $("p-cancel").addEventListener("click", closeProfile);
   $("p-save").addEventListener("click", saveProfile);
+  $("p-photo-btn").addEventListener("click", () => $("p-photo").click());
+  $("p-photo").addEventListener("change", () => {
+    readPhoto();
+    $("p-photo").value = "";
+  });
+  $("p-photo-remove").addEventListener("click", () => {
+    pendingPhoto = "";
+    updatePhotoPreview();
+  });
   $("profile-modal").addEventListener("click", (e) => {
     if (e.target === $("profile-modal")) closeProfile();
   });
@@ -467,7 +562,7 @@ document.addEventListener("DOMContentLoaded", function init() {
     window.open(url, "_blank", "noopener");
   });
 
-  ["company", "website", "text"].forEach((id) => {
+  ["company", "website", "consignee", "location", "text"].forEach((id) => {
     $(id).addEventListener("input", () => {
       state.dirty = true;
     });

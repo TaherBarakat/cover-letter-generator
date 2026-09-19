@@ -9,6 +9,8 @@ const PROFILE_DEFAULTS = {
   city: "new york",
   phone: "(+963) 099999999999999",
   email: "pink.guy@gmail.com",
+  title: "Bewerbung",
+  photo: "",
 };
 
 let profile = { ...PROFILE_DEFAULTS };
@@ -40,12 +42,6 @@ function germanDate() {
     month: "long",
     year: "numeric",
   });
-}
-
-function websiteLink(w) {
-  const t = String(w || "").trim();
-  if (!t) return "";
-  return /^https?:\/\//i.test(t) ? t : "https://" + t;
 }
 
 // Blank line separated -> <p> paragraphs
@@ -80,8 +76,7 @@ const LETTER_CSS = `
   .spacer { height: 12mm; }
   .recipient { width: 78mm; }
   .recipient .clinic { font-weight: 700; }
-  .recipient .website { font-size: 9.5pt; }
-  .recipient .website a { color: #333; text-decoration: none; }
+  .recipient .sub-line { font-size: 9.5pt; }
   .date { text-align: right; margin: 8mm 0; }
   .subject {
     font-weight: 700;
@@ -90,10 +85,17 @@ const LETTER_CSS = `
     border-bottom: 1.5px solid #000;
     padding-bottom: 2mm;
   }
-  .salutation { margin: 0 0 4mm; }
   .body p { margin: 0 0 4mm; text-align: justify; }
   .closing { margin-top: 8mm; margin-bottom: 0; }
   .signature { margin-top: 14mm; font-weight: 700; }
+  .signature .signature-photo {
+    display: block;
+    width: 26mm;
+    height: auto;
+    border-radius: 2mm;
+    object-fit: cover;
+    margin-bottom: 6mm;
+  }
 `;
 
 const PREVIEW_CSS = `
@@ -147,7 +149,8 @@ const PRINT_SCRIPT =
 function renderLetter(letter, mode) {
   const p = profile;
   const name = String(letter.name || "").trim();
-  const website = String(letter.website || "").trim();
+  const consignee = String(letter.consignee || "").trim();
+  const location = String(letter.location || "").trim();
   const isPreview = mode === "preview";
 
   const body =
@@ -167,12 +170,11 @@ function renderLetter(letter, mode) {
     '<div class="clinic">' +
     escapeHtml(name) +
     "</div>" +
-    (website
-      ? '<div class="website"><a href="' +
-        escapeHtml(websiteLink(website)) +
-        '">' +
-        escapeHtml(website) +
-        "</a></div>"
+    (consignee
+      ? '<div class="sub-line">' + escapeHtml(consignee) + "</div>"
+      : "") +
+    (location
+      ? '<div class="sub-line">' + escapeHtml(location) + "</div>"
       : "") +
     "</div>" +
     '<div class="date">' +
@@ -180,13 +182,17 @@ function renderLetter(letter, mode) {
     ", " +
     escapeHtml(germanDate()) +
     "</div>" +
-    '<div class="subject">Bewerbung</div>' +
-    '<p class="salutation">Sehr geehrte Damen und Herren,</p>' +
+    '<div class="subject">' + escapeHtml(p.title || "Bewerbung") + "</div>" +
     '<div class="body">' +
     paragraphs(letter.text) +
     "</div>" +
     '<p class="closing">Mit freundlichen Grüßen</p>' +
     '<div class="signature">' +
+    (p.photo
+      ? '<img class="signature-photo" src="' +
+        escapeHtml(p.photo) +
+        '" alt="" />'
+      : "") +
     escapeHtml(p.name) +
     "</div>";
 
@@ -199,7 +205,9 @@ function renderLetter(letter, mode) {
     '<html lang="de">\n<head>\n<meta charset="UTF-8" />\n' +
     "<title>" +
     escapeHtml(name) +
-    " – Bewerbung</title>\n" +
+    " – " +
+    escapeHtml(p.title || "Bewerbung") +
+    "</title>\n" +
     "<style>\n" +
     css +
     "\n</style>\n</head>\n<body>\n" +
