@@ -1,0 +1,6 @@
+# Generated / optional local files
+# This app is fully static; these are only kept if you add them later.
+node_modules/
+pdf/
+server.log
+server.err
