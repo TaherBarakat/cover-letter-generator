@@ -2,7 +2,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{{company}} – Bewerbung</title>
+    <title>{{company}} – {{profile.title}}</title>
     <style>
       @import url("https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&display=swap");
 
@@ -43,13 +43,8 @@
         font-weight: 700;
       }
 
-      .recipient .website {
+      .recipient .sub-line {
         font-size: 9.5pt;
-      }
-
-      .recipient .website a {
-        color: #333;
-        text-decoration: none;
       }
 
       .date {
@@ -63,10 +58,6 @@
         margin: 2mm 0 6mm;
         border-bottom: 1.5px solid #000;
         padding-bottom: 2mm;
-      }
-
-      .salutation {
-        margin: 0 0 4mm;
       }
 
       .body p {
@@ -83,6 +74,15 @@
         margin-top: 14mm;
         font-weight: 700;
       }
+
+      .signature .signature-photo {
+        display: block;
+        width: 26mm;
+        height: auto;
+        border-radius: 2mm;
+        object-fit: cover;
+        margin-bottom: 6mm;
+      }
     </style>
   </head>
   <body>
@@ -98,20 +98,26 @@
 
     <div class="recipient">
       <div class="clinic">{{company}}</div>
-      {{#if website}}
-        <div class="website"><a href="{{websiteLink}}">{{website}}</a></div>
+      {{#if consignee}}
+        <div class="sub-line">{{consignee}}</div>
+      {{/if}}
+      {{#if location}}
+        <div class="sub-line">{{location}}</div>
       {{/if}}
     </div>
 
     <div class="date">{{profile.city}}, {{date}}</div>
 
-    <div class="subject">Bewerbung</div>
-
-    <p class="salutation">Sehr geehrte Damen und Herren,</p>
+    <div class="subject">{{profile.title}}</div>
 
     <div class="body">{{paragraphs text}}</div>
 
     <p class="closing">Mit freundlichen Grüßen</p>
-    <div class="signature">{{profile.name}}</div>
+    <div class="signature">
+      {{#if profile.photo}}
+        <img class="signature-photo" src="{{profile.photo}}" alt="" />
+      {{/if}}
+      {{profile.name}}
+    </div>
   </body>
 </html>
