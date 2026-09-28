@@ -21,22 +21,41 @@
       }
 
       .sender {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 20mm;
+      }
+
+      .sender .sender-name {
+        font-weight: 700;
+        font-size: 13pt;
+        color: #000;
+        flex-shrink: 0;
+      }
+
+      .sender .sender-info {
+        margin: 0;
+        padding: 0;
+        font-style: normal;
         font-size: 9.5pt;
         color: #333;
+        text-align: right;
       }
 
-      .sender .name {
-        font-weight: 700;
-        font-size: 11pt;
-        color: #000;
+      .sender .sender-info .sender-row + .sender-row {
+        margin-top: 0.5mm;
       }
 
-      .spacer {
-        height: 12mm;
+      .rule {
+        border: none;
+        border-bottom: 1.5px solid #000;
+        margin: 6mm 0 4mm;
       }
 
       .recipient {
         width: 78mm;
+        margin-bottom: 8mm;
       }
 
       .recipient .clinic {
@@ -49,15 +68,13 @@
 
       .date {
         text-align: right;
-        margin: 8mm 0;
+        margin: 0;
       }
 
       .subject {
         font-weight: 700;
         font-size: 12.5pt;
         margin: 2mm 0 6mm;
-        border-bottom: 1.5px solid #000;
-        padding-bottom: 2mm;
       }
 
       .body p {
@@ -86,16 +103,19 @@
     </style>
   </head>
   <body>
-    <div class="sender">
-      <div class="name">{{profile.name}}</div>
-      {{#if profile.street}}<div>{{profile.street}}</div>{{/if}}
-      {{#if profile.postal}}<div>{{profile.postal}}
-          {{profile.city}}</div>{{/if}}
-      {{#if profile.phone}}<div>Tel.: {{profile.phone}}</div>{{/if}}
-      {{#if profile.email}}<div>{{profile.email}}</div>{{/if}}
-    </div>
+<header class="sender">
+      <div class="sender-name">{{profile.name}}</div>
+      <address class="sender-info">
+        {{#if profile.street}}<div class="sender-row">{{profile.street}}</div>{{/if}}
+        {{#if profile.postal}}<div class="sender-row">{{profile.postal}} {{profile.city}}</div>{{/if}}
+        {{#if profile.phone}}<div class="sender-row">Tel.: {{profile.phone}}</div>{{/if}}
+        {{#if profile.email}}<div class="sender-row">{{profile.email}}</div>{{/if}}
+      </address>
+    </header>
 
-    <div class="spacer"></div>
+    <hr class="rule" />
+
+    <div class="date">{{profile.city}}, {{date}}</div>
 
     <div class="recipient">
       <div class="clinic">{{company}}</div>
@@ -106,8 +126,6 @@
         <div class="sub-line">{{location}}</div>
       {{/if}}
     </div>
-
-    <div class="date">{{profile.city}}, {{date}}</div>
 
     <div class="subject">{{profile.title}}</div>
 

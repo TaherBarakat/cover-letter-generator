@@ -71,19 +71,40 @@ const LETTER_CSS = `
     margin: 0 auto;
     padding: 20mm 25mm;
   }
-  .sender { font-size: 9.5pt; color: #333; }
-  .sender .name { font-weight: 700; font-size: 11pt; color: #000; }
-  .spacer { height: 12mm; }
-  .recipient { width: 78mm; }
+  .sender {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20mm;
+  }
+  .sender .sender-name {
+    font-weight: 700;
+    font-size: 13pt;
+    color: #000;
+    flex-shrink: 0;
+  }
+  .sender .sender-info {
+    margin: 0;
+    padding: 0;
+    font-style: normal;
+    font-size: 9.5pt;
+    color: #333;
+    text-align: right;
+  }
+  .sender .sender-info .sender-row + .sender-row { margin-top: 0.5mm; }
+  .rule {
+    border: none;
+    border-bottom: 1.5px solid #000;
+    margin: 6mm 0 4mm;
+  }
+  .recipient { width: 78mm; margin-bottom: 8mm; }
   .recipient .clinic { font-weight: 700; }
   .recipient .sub-line { font-size: 9.5pt; }
-  .date { text-align: right; margin: 8mm 0; }
+  .date { text-align: right; margin: 0; }
   .subject {
     font-weight: 700;
     font-size: 12.5pt;
     margin: 2mm 0 6mm;
-    border-bottom: 1.5px solid #000;
-    padding-bottom: 2mm;
   }
   .body p { margin: 0 0 4mm; text-align: justify; }
   .closing { margin-top: 8mm; margin-bottom: 0; }
@@ -154,18 +175,35 @@ function renderLetter(letter, mode) {
   const isPreview = mode === "preview";
 
   const body =
-    '<div class="sender">' +
-    '<div class="name">' +
+    '<header class="sender">' +
+    '<div class="sender-name">' +
     escapeHtml(p.name) +
     "</div>" +
-    (p.street ? "<div>" + escapeHtml(p.street) + "</div>" : "") +
-    (p.postal
-      ? "<div>" + escapeHtml(p.postal) + " " + escapeHtml(p.city) + "</div>"
+    '<address class="sender-info">' +
+    (p.street
+      ? '<div class="sender-row">' + escapeHtml(p.street) + "</div>"
       : "") +
-    (p.phone ? "<div>Tel.: " + escapeHtml(p.phone) + "</div>" : "") +
-    (p.email ? "<div>" + escapeHtml(p.email) + "</div>" : "") +
+    (p.postal || p.city
+      ? '<div class="sender-row">' +
+        escapeHtml(
+          (p.postal || "") + (p.postal && p.city ? " " : "") + (p.city || "")
+        ) +
+        "</div>"
+      : "") +
+    (p.phone
+      ? '<div class="sender-row">Tel.: ' + escapeHtml(p.phone) + "</div>"
+      : "") +
+    (p.email
+      ? '<div class="sender-row">' + escapeHtml(p.email) + "</div>"
+      : "") +
+    "</address>" +
+    "</header>" +
+    '<hr class="rule" />' +
+    '<div class="date">' +
+    escapeHtml(p.city) +
+    ", " +
+    escapeHtml(germanDate()) +
     "</div>" +
-    '<div class="spacer"></div>' +
     '<div class="recipient">' +
     '<div class="clinic">' +
     escapeHtml(name) +
@@ -176,11 +214,6 @@ function renderLetter(letter, mode) {
     (location
       ? '<div class="sub-line">' + escapeHtml(location) + "</div>"
       : "") +
-    "</div>" +
-    '<div class="date">' +
-    escapeHtml(p.city) +
-    ", " +
-    escapeHtml(germanDate()) +
     "</div>" +
     '<div class="subject">' +
     escapeHtml(p.title || "Bewerbung") +
