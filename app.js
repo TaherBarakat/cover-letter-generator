@@ -212,7 +212,7 @@ function save() {
     return;
   }
   const dup = state.db.find(
-    (x) => x.id !== l.id && x.name.toLowerCase() === name.toLowerCase()
+    (x) => x.id !== l.id && x.name.toLowerCase() === name.toLowerCase(),
   );
   if (dup) {
     setStatus("A letter with this name already exists", true);
@@ -342,7 +342,7 @@ function preview() {
       const doc = frame.contentDocument || frame.contentWindow.document;
       const h = Math.max(
         doc.documentElement.scrollHeight,
-        doc.body.scrollHeight
+        doc.body.scrollHeight,
       );
       frame.style.height = Math.max(300, h + 8) + "px";
     } catch (e) {
@@ -365,7 +365,7 @@ function generatePDF() {
   w.document.write(renderLetter(l, "print"));
   w.document.close();
   w.focus();
-  setStatus("Print window opened — choose \"Save as PDF\"");
+  setStatus('Print window opened — choose "Save as PDF"');
 }
 
 // ---------------------------------------------------------------------------

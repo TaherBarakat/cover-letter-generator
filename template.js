@@ -182,11 +182,13 @@ function renderLetter(letter, mode) {
     ", " +
     escapeHtml(germanDate()) +
     "</div>" +
-    '<div class="subject">' + escapeHtml(p.title || "Bewerbung") + "</div>" +
+    '<div class="subject">' +
+    escapeHtml(p.title || "Bewerbung") +
+    "</div>" +
     '<div class="body">' +
     paragraphs(letter.text) +
-    "</div>" +
-    '<p class="closing">Mit freundlichen Grüßen</p>' +
+    // "</div>" +
+    // '<p class="closing">Mit freundlichen Grüßen</p>' +
     '<div class="signature">' +
     (p.photo
       ? '<img class="signature-photo" src="' +

@@ -89,7 +89,8 @@
     <div class="sender">
       <div class="name">{{profile.name}}</div>
       {{#if profile.street}}<div>{{profile.street}}</div>{{/if}}
-      {{#if profile.postal}}<div>{{profile.postal}} {{profile.city}}</div>{{/if}}
+      {{#if profile.postal}}<div>{{profile.postal}}
+          {{profile.city}}</div>{{/if}}
       {{#if profile.phone}}<div>Tel.: {{profile.phone}}</div>{{/if}}
       {{#if profile.email}}<div>{{profile.email}}</div>{{/if}}
     </div>
@@ -112,7 +113,7 @@
 
     <div class="body">{{paragraphs text}}</div>
 
-    <p class="closing">Mit freundlichen Grüßen</p>
+    {{! <p class="closing">Mit freundlichen Grüßen</p> }}
     <div class="signature">
       {{#if profile.photo}}
         <img class="signature-photo" src="{{profile.photo}}" alt="" />
