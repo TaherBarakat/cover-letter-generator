@@ -167,6 +167,14 @@ function renderList() {
 // Select / Save / Create / Delete
 // ---------------------------------------------------------------------------
 
+function updateWordCount() {
+  const text = $("text").value.trim();
+  const count = text ? text.split(/\s+/).filter(Boolean).length : 0;
+  const el = $("word-count");
+  el.textContent = count + (count === 1 ? " word" : " words");
+  el.style.color = count > 300 ? "#c0392b" : "";
+}
+
 function loadIntoUI(l) {
   state.currentId = l.id;
   state.dirty = false;
@@ -175,6 +183,7 @@ function loadIntoUI(l) {
   $("consignee").value = l.consignee || "";
   $("location").value = l.location || "";
   $("text").value = l.text || "";
+  updateWordCount();
   $("preview-wrap").hidden = true;
   $("preview-frame").srcdoc = "";
   editorPane.hidden = false;
@@ -565,6 +574,7 @@ document.addEventListener("DOMContentLoaded", function init() {
   ["company", "website", "consignee", "location", "text"].forEach((id) => {
     $(id).addEventListener("input", () => {
       state.dirty = true;
+      if (id === "text") updateWordCount();
     });
   });
 

@@ -218,6 +218,19 @@ textarea {
   color: var(--muted);
 }
 
+.text-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.word-count {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--muted);
+}
+
 /* ---------- Input group (website + open button) ---------- */
 
 .input-group {
