@@ -69,7 +69,6 @@ const LETTER_CSS = `
     color: #000;
     width: 210mm;
     margin: 0 auto;
-    padding: 20mm 0mm 25mm 25mm;
   }
   .sender { font-size: 9.5pt; color: #333; }
   .sender .sender-name {
@@ -103,7 +102,7 @@ const LETTER_CSS = `
   }
   .body p { margin: 0 0 4mm; text-align: justify; }
   .closing { margin-top: 8mm; margin-bottom: 0; }
-  .signature { margin-top: 8mm; font-weight: 700; }
+  .signature { margin-top: 3mm; font-weight: 700; }
   .signature .signature-photo {
     display: block;
     width: 26mm;
