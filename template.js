@@ -44,14 +44,14 @@ function germanDate() {
   });
 }
 
-// Blank line separated -> <p> paragraphs
+// Blank line separated -> <p> paragraphs, single newlines -> <br>
 function paragraphs(text) {
   const t = String(text || "").replace(/\r\n/g, "\n");
   return t
     .split(/\n{2,}/)
     .map((p) => p.trim())
     .filter(Boolean)
-    .map((p) => "<p>" + escapeHtml(p) + "</p>")
+    .map((p) => "<p>" + escapeHtml(p).replace(/\n/g, "<br>") + "</p>")
     .join("\n");
 }
 
