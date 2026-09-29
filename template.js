@@ -69,7 +69,7 @@ const LETTER_CSS = `
     color: #000;
     width: 210mm;
     margin: 0 auto;
-    padding: 20mm 25mm;
+    padding: 20mm 0mm 25mm 25mm;
   }
   .sender { font-size: 9.5pt; color: #333; }
   .sender .sender-name {
