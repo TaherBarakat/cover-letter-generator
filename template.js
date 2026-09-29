@@ -71,36 +71,31 @@ const LETTER_CSS = `
     margin: 0 auto;
     padding: 20mm 25mm;
   }
-  .sender {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 20mm;
-  }
+  .sender { font-size: 9.5pt; color: #333; }
   .sender .sender-name {
     font-weight: 700;
-    font-size: 13pt;
+    font-size: 15pt;
     color: #000;
-    flex-shrink: 0;
+    margin-bottom: 2mm;
   }
   .sender .sender-info {
     margin: 0;
     padding: 0;
     font-style: normal;
-    font-size: 9.5pt;
     color: #333;
-    text-align: right;
   }
-  .sender .sender-info .sender-row + .sender-row { margin-top: 0.5mm; }
-  .rule {
-    border: none;
-    border-bottom: 1.5px solid #000;
-    margin: 6mm 0 4mm;
+  .rule { border: none; border-bottom: 1.5px solid #000; margin: 6mm 0 4mm; }
+  .recipient {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10mm;
+    margin-bottom: 8mm;
   }
-  .recipient { width: 78mm; margin-bottom: 8mm; }
+  .recipient .recipient-left { width: 78mm; }
   .recipient .clinic { font-weight: 700; }
   .recipient .sub-line { font-size: 9.5pt; }
-  .date { text-align: right; margin: 0; }
+  .date { text-align: right; }
   .subject {
     font-weight: 700;
     font-size: 12.5pt;
@@ -108,14 +103,14 @@ const LETTER_CSS = `
   }
   .body p { margin: 0 0 4mm; text-align: justify; }
   .closing { margin-top: 8mm; margin-bottom: 0; }
-  .signature { margin-top: 14mm; font-weight: 700; }
+  .signature { margin-top: 8mm; font-weight: 700; }
   .signature .signature-photo {
     display: block;
     width: 26mm;
     height: auto;
     border-radius: 2mm;
     object-fit: cover;
-    margin-bottom: 6mm;
+    margin-bottom: 2mm;
   }
 `;
 
@@ -174,37 +169,33 @@ function renderLetter(letter, mode) {
   const location = String(letter.location || "").trim();
   const isPreview = mode === "preview";
 
+  const infoParts = [];
+
+  if (p.phone) infoParts.push(p.phone);
+  if (p.email) infoParts.push(p.email);
+  // if () infoParts.push(p.street);
+  if (p.postal || p.city || p.street)
+    infoParts.push(
+      (p.street ? p.street + "," : "") +
+        (p.postal || "") +
+        (p.postal && p.city ? " " : "") +
+        (p.city || ""),
+    );
+
   const body =
     '<header class="sender">' +
     '<div class="sender-name">' +
     escapeHtml(p.name) +
     "</div>" +
-    '<address class="sender-info">' +
-    (p.street
-      ? '<div class="sender-row">' + escapeHtml(p.street) + "</div>"
+    (infoParts.length
+      ? '<address class="sender-info">' +
+        escapeHtml(infoParts.join("   |   ")) +
+        "</address>"
       : "") +
-    (p.postal || p.city
-      ? '<div class="sender-row">' +
-        escapeHtml(
-          (p.postal || "") + (p.postal && p.city ? " " : "") + (p.city || "")
-        ) +
-        "</div>"
-      : "") +
-    (p.phone
-      ? '<div class="sender-row">Tel.: ' + escapeHtml(p.phone) + "</div>"
-      : "") +
-    (p.email
-      ? '<div class="sender-row">' + escapeHtml(p.email) + "</div>"
-      : "") +
-    "</address>" +
     "</header>" +
     '<hr class="rule" />' +
-    '<div class="date">' +
-    escapeHtml(p.city) +
-    ", " +
-    escapeHtml(germanDate()) +
-    "</div>" +
     '<div class="recipient">' +
+    '<div class="recipient-left">' +
     '<div class="clinic">' +
     escapeHtml(name) +
     "</div>" +
@@ -214,6 +205,12 @@ function renderLetter(letter, mode) {
     (location
       ? '<div class="sub-line">' + escapeHtml(location) + "</div>"
       : "") +
+    "</div>" +
+    '<div class="date">' +
+    escapeHtml(p.city) +
+    ", " +
+    escapeHtml(germanDate()) +
+    "</div>" +
     "</div>" +
     '<div class="subject">' +
     escapeHtml(p.title || "Bewerbung") +

@@ -21,30 +21,22 @@
       }
 
       .sender {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        gap: 20mm;
+        font-size: 9.5pt;
+        color: #333;
       }
 
       .sender .sender-name {
         font-weight: 700;
-        font-size: 13pt;
+        font-size: 15pt;
         color: #000;
-        flex-shrink: 0;
+        margin-bottom: 2mm;
       }
 
       .sender .sender-info {
         margin: 0;
         padding: 0;
         font-style: normal;
-        font-size: 9.5pt;
         color: #333;
-        text-align: right;
-      }
-
-      .sender .sender-info .sender-row + .sender-row {
-        margin-top: 0.5mm;
       }
 
       .rule {
@@ -54,8 +46,15 @@
       }
 
       .recipient {
-        width: 78mm;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 10mm;
         margin-bottom: 8mm;
+      }
+
+      .recipient .recipient-left {
+        width: 78mm;
       }
 
       .recipient .clinic {
@@ -68,7 +67,6 @@
 
       .date {
         text-align: right;
-        margin: 0;
       }
 
       .subject {
@@ -88,7 +86,7 @@
       }
 
       .signature {
-        margin-top: 14mm;
+        margin-top: 8mm;
         font-weight: 700;
       }
 
@@ -98,33 +96,29 @@
         height: auto;
         border-radius: 2mm;
         object-fit: cover;
-        margin-bottom: 6mm;
+        margin-bottom: 2mm;
       }
     </style>
   </head>
   <body>
 <header class="sender">
       <div class="sender-name">{{profile.name}}</div>
-      <address class="sender-info">
-        {{#if profile.street}}<div class="sender-row">{{profile.street}}</div>{{/if}}
-        {{#if profile.postal}}<div class="sender-row">{{profile.postal}} {{profile.city}}</div>{{/if}}
-        {{#if profile.phone}}<div class="sender-row">Tel.: {{profile.phone}}</div>{{/if}}
-        {{#if profile.email}}<div class="sender-row">{{profile.email}}</div>{{/if}}
-      </address>
+      <address class="sender-info">{{#if profile.street}}{{profile.street}} | {{/if}}{{#if profile.postal}}{{profile.postal}} {{profile.city}} | {{/if}}{{#if profile.phone}}{{profile.phone}} | {{/if}}{{#if profile.email}}{{profile.email}}{{/if}}</address>
     </header>
 
     <hr class="rule" />
 
-    <div class="date">{{profile.city}}, {{date}}</div>
-
     <div class="recipient">
-      <div class="clinic">{{company}}</div>
-      {{#if consignee}}
-        <div class="sub-line">{{consignee}}</div>
-      {{/if}}
-      {{#if location}}
-        <div class="sub-line">{{location}}</div>
-      {{/if}}
+      <div class="recipient-left">
+        <div class="clinic">{{company}}</div>
+        {{#if consignee}}
+          <div class="sub-line">{{consignee}}</div>
+        {{/if}}
+        {{#if location}}
+          <div class="sub-line">{{location}}</div>
+        {{/if}}
+      </div>
+      <div class="date">{{profile.city}}, {{date}}</div>
     </div>
 
     <div class="subject">{{profile.title}}</div>
